@@ -55,7 +55,7 @@ def manager_dashboard(request):
         "start_date": start_date,
         "end_date": end_date,
     }
-    return render(request, "Dashboard/manager-dashboard.html", context)
+    return render(request, "dashboard/manager-dashboard.html", context)
 
 def user_dashboard(request):
     type = request.GET.get('type', 'all')
