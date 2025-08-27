@@ -1,0 +1,155 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+  </head>
+
+  <body class="bg-slate-50">
+    <!-- Header -->
+    <header
+      class="mb-6 flex items-center justify-between p-6 bg-emerald-200 rounded-md"
+    >
+      <div class="text-teal-500">
+        <h1 class="text-2xl font-bold">Organizer Dashboard</h1>
+        <p class="text-sm text-teal-600">
+          Overview of events, quick stats and filters
+        </p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="flex gap-6">
+          <a
+            href="{% url 'manager-dashboard' %}"
+            class="text-gray-700 hover:text-teal-600 font-medium"
+            >Manager Dashboard</a
+          >
+          <a
+            href="{% url 'user-dashboard' %}"
+            class="text-gray-700 hover:text-teal-600 font-medium"
+            >User Dashboard</a
+          >
+        </div>
+        <a
+          href="{% url 'create-event' %}"
+          class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+        >
+          + Create Event
+        </a>
+      </div>
+    </header>
+
+    <!-- Stats Grid -->
+    <section class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 p-6">
+      <!-- Total Events -->
+      <div class="bg-cyan-500 shadow-lg shadow-cyan-500/80 rounded-2xl p-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-md text-slate-700">Total Events</div>
+            <div class="mt-1 text-2xl font-semibold">{{ counts.total }}</div>
+          </div>
+
+          <div class="rounded-full bg-indigo-50 p-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming -->
+      <div class="bg-cyan-500 shadow-lg shadow-cyan-500/70 rounded-2xl p-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-md text-slate-700">Upcoming</div>
+            <div class="mt-1 text-2xl font-semibold">{{ counts.upcoming }}</div>
+          </div>
+
+          <div class="rounded-full bg-indigo-50 p-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Past -->
+      <div class="bg-cyan-500 shadow-lg shadow-cyan-500/70 rounded-2xl p-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-md text-slate-700">Past Events</div>
+            <div class="mt-1 text-2xl font-semibold">{{ counts.past }}</div>
+          </div>
+
+          <div class="rounded-full bg-emerald-50 p-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Participants -->
+      <div class="bg-cyan-500 shadow-lg shadow-cyan-500/70 rounded-2xl p-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-md text-slate-700">Participants</div>
+            <div class="mt-1 text-2xl font-semibold">
+              {{ counts.participants }}
+            </div>
+          </div>
+          <div class="rounded-full bg-pink-50 p-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zM6 20a6 6 0 0112 0H6z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {% block events %} {% endblock events %}
+  </body>
+</html>

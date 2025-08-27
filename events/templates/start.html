@@ -1,0 +1,39 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management Home</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-teal-600">Event Management</div>
+            <div class="flex gap-6">
+                <a href="{% url 'manager-dashboard' %}" class="text-gray-700 hover:text-teal-600 font-medium">Manager Dashboard</a>
+                <a href="{% url 'user-dashboard' %}" class="text-gray-700 hover:text-teal-600 font-medium">User Dashboard</a>
+                <a href="{% url 'create-event' %}" class="text-gray-700 hover:text-teal-600 font-medium">Create Event</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="flex-grow flex items-center justify-center bg-blue-500">
+        <div class="text-center text-white p-20 rounded-lg">
+            <h1 class="text-4xl font-bold mb-4">Welcome to Event Management</h1>
+            <p class="text-lg mb-6">Organize your events efficiently and easily.</p>
+            <a href="#" class="bg-white text-blue-500 px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition">Get Started</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-600 shadow-inner py-4 text-center text-gray-500 ">
+        {{ now|date:"Y" }} Event Management System. All rights reserved.
+    </footer>
+
+</body>
+</html>
