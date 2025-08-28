@@ -19,7 +19,7 @@ class Category(models.Model):
         ('seminar', 'Seminar'),
         ('webinar', 'Webinar'),
         ('meetup', 'Meetup'),
-    ]
+    ] 
     name = models.CharField(
         max_length=50,
         choices=CATEGORY_CHOICES,

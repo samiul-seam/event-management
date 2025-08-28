@@ -1,6 +1,6 @@
 from django.shortcuts import render , redirect
 from django.http import HttpResponse
-from events.forms import EventModelForm
+from events.forms import EventModelForm , ParticipantForm
 from django.contrib import messages
 from datetime import date
 from django.db.models import Q, Count, Max, Min, Avg
@@ -146,3 +146,16 @@ def delete_event(request, id):
         messages.error(request, 'Something went wrong')
         return redirect('manager-dashboard')
 
+def add_participant(request):
+    form = ParticipantForm()
+
+    if request.method == "POST":
+        form = ParticipantForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "participant created Successfully")
+            return redirect('add-participant') 
+        
+    return render(request, "add_participant.html", {
+        "participant_form": form
+    })

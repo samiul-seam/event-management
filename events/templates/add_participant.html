@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Add Participant</title>
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
 <body>
@@ -19,8 +19,11 @@
 
         <form method="POST">
             {% csrf_token %}
-            {{ event_form }}
-            <button type="submit" class="mb-5 bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">Submit</button>
+            {{ participant_form }}
+
+            <button type="submit" class="mb-5 bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">
+                Save Participant
+            </button>
         </form>
     </div>
 </body>

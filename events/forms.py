@@ -58,3 +58,18 @@ class EventModelForm(StyledFormMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['category'].queryset = categories or Category.objects.all()
         self.fields['included_in'].queryset = participants or Participant.objects.all()
+
+class ParticipantForm(forms.ModelForm):
+    class Meta:
+        model = Participant
+        fields = ['name', 'email']   
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'border rounded-md px-3 py-2 w-full',
+                'placeholder': 'Enter full name'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'border rounded-md px-3 py-2 w-full',
+                'placeholder': 'Enter email address'
+            }),
+        }
