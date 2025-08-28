@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure--#a!^t65+k)=9xs817^-hc)+n%+168+hv6vo+azf3uv*nt##3#
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com' 'http://127.0.0.1:8000']
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com' , 'http://127.0.0.1:8000']
 
 
 # Application definition
@@ -58,7 +58,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'event_management.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
