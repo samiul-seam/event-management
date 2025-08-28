@@ -25,7 +25,7 @@
                         <button type="submit"
                             class="w-full rounded-md bg-indigo-600 px-3 py-2 text-white">Apply</button>
                     </form>
-                </div>
+                </div> 
 
                 <!-- Date Range Search -->
                 <form method="get" action="{% url 'user-dashboard' %}"
@@ -95,6 +95,10 @@
                                 class="font-medium">Location:</span> {{ event.location }}</p>
                         <p class="text-sm text-slate-500"><span
                                 class="font-medium">Participants:</span> {{ event.included_in.count }}</p>
+                        <button onclick="const d=document.getElementById('desc-{{ event.id }}'); d.classList.toggle('hidden');" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                                description
+                        </button>
+                        <div id="desc-{{ event.id }}" class="hidden mt-2 p-2 bg-white rounded text-left text-gray-700"> {{ event.description }} </div>
                     </div>
                    {% empty %}
                     <p class="col-span-full text-center text-slate-500">No
