@@ -212,17 +212,11 @@ def event_detail(request, id):
 
 
 @login_required
-def tempo(request):
-    participant = User.objects.all()  # fetch all users
-    return render(request, 'tempo.html', {'participant': participant})
-
-
-@login_required
 @permission_required('events.view_event', login_url='no-permission')
-def rsvp_event(request, id):
+def rsvp_event(request, event_id):
     if request.method == "POST":
         try:
-            event = Event.objects.get(id=id)
+            event = Event.objects.get(id=event_id)
         except Event.DoesNotExist:
             return HttpResponse("Event not found.")
 

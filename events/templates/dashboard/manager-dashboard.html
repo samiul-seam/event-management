@@ -182,53 +182,65 @@
 </section>
 
   <!-- All Events -->
-  <section class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 p-4">
+  <section id="all-events" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 p-4">
     
     {% for event in events %}
         
-    <!-- Event Card 1 -->
+    <!-- Event Card -->
     <div
       class="rounded-2xl bg-green-200 p-4 shadow hover:shadow-lg transition text-center flex flex-col items-center">
-      <img src=" {{event.asset.url}} "
+      
+      <img src="{{ event.asset.url }}" alt="{{ event.name }}"
         class="w-full h-48 object-cover rounded-xl mb-4">
       <div class="mb-4">
-        <h3 class="text-xl font-bold"> {{event.name}} </h3>
-        <p class="text-gray-700"> {{ event.date }} </p>
-        <p class="text-gray-500"> {{ event.location }} </p>
-        <p class="text-gray-500"> {{ event.category }} </p>
+        <h3 class="text-xl font-bold">{{ event.name }}</h3>
+        <p class="text-gray-700">{{ event.date }}</p>
+        <p class="text-gray-500">{{ event.location }}</p>
+        <p class="text-gray-500">{{ event.category }}</p>
       </div> 
+      
+      <!-- Buttons -->
       <div class="flex gap-2">
         <a href="{% url 'event_detail' event.id %}"
-          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Details</a>
-        <a href="#rsvp" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">RSVP</a>
+          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+          Details
+        </a>
+        <a href="#rsvp-{{ event.id }}"
+          class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+          RSVP
+        </a>
       </div>
     </div>
 
-    <div id="rsvp"
+    <div id="rsvp-{{ event.id }}"
       class="fixed inset-0 bg-black/40 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300
          target:opacity-100 target:pointer-events-auto z-30">
       <div class="bg-white p-6 rounded-xl shadow-lg w-80 text-center">
-        <p class="text-gray-600">Are you sure to RSVP this Event ?</p>
-        <div class="flex justify-between"> 
-          <a href="#all-events"
-          class="mt-4 inline-block bg-red-500 text-white px-4 py-2 rounded-lg">
-          Close
-        </a>
-        <form method="post" action="{% url 'rsvp-event' event.id %}">
-            {% csrf_token %}
-            <button type="submit" class="mt-4 inline-block bg-green-500 text-white px-4 py-2 rounded-lg">RSVP</button>
-        </form>  
-        </div>
+        <p class="text-gray-600 mb-4">Are you sure you want to RSVP for <strong>{{ event.name }}</strong>?</p>
         
+        <div class="flex justify-between">
+          <a href="#all-events"
+            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+            Cancel
+          </a>
+          
+          <form method="post" action="{% url 'rsvp-event' event.id %}">
+            {% csrf_token %}
+            <button type="submit"
+              class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+              Confirm
+            </button>
+          </form>  
+        </div>
       </div>
     </div>
     
     {% empty %}
       <p class="col-span-full text-center text-slate-500">No events found.</p>
-
     {% endfor %}
 
-  </section>
+</section>
+
 
 
 {% endblock events %}
