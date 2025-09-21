@@ -1,5 +1,6 @@
 from django import forms
-from events.models import Event, Participant, Category
+from events.models import Event, Category
+from django.contrib.auth.models import User
 
 
 class StyledFormMixin:
@@ -43,33 +44,38 @@ class StyledFormMixin:
 class EventModelForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['name', 'description', 'date', 'time', 'location', 'category', 'included_in']
+        fields = ['name', 'description', 'date', 'time', 'location', 'category', 'asset', 'participants']
         widgets = {
             'date': forms.SelectDateWidget(),
-            'time': forms.TimeInput(attrs={
-                'type': 'time'
-            }),
-            'included_in': forms.CheckboxSelectMultiple(),
+            'time': forms.TimeInput(attrs={'type': 'time'}),
+            'participants': forms.CheckboxSelectMultiple(),
         }
  
     def __init__(self, *args, **kwargs):
         categories = kwargs.pop("categories", None)
         participants = kwargs.pop("participants", None)
         super().__init__(*args, **kwargs)
+
         self.fields['category'].queryset = categories or Category.objects.all()
-        self.fields['included_in'].queryset = participants or Participant.objects.all()
+        self.fields['participants'].queryset = participants or User.objects.all()
+
 
 class ParticipantForm(forms.ModelForm):
     class Meta:
-        model = Participant
-        fields = ['name', 'email']   
+        model = User
+        fields = ['first_name', 'last_name', 'email']
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'border rounded-md px-3 py-2 w-full',
-                'placeholder': 'Enter full name'
-            }),
-            'email': forms.EmailInput(attrs={
-                'class': 'border rounded-md px-3 py-2 w-full',
-                'placeholder': 'Enter email address'
-            }),
+            'first_name': forms.TextInput(attrs={'class': 'border rounded-md px-3 py-2 w-full'}),
+            'last_name': forms.TextInput(attrs={'class': 'border rounded-md px-3 py-2 w-full'}),
+            'email': forms.EmailInput(attrs={'class': 'border rounded-md px-3 py-2 w-full'}),
+        }
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name' , 'description']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4, 'class': 'border rounded p-2 w-full'}),
+            'name': forms.TextInput(attrs={'class': 'border rounded p-2 w-full'})
         }

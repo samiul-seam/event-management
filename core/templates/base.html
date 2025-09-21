@@ -1,0 +1,31 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management Home</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    {% if request.user.is_authenticated %} 
+        {% include "logged_nav.html" %}
+    {% else %}
+        {% include "non_logged_nav.html" %}
+    {% endif %}
+
+    <!-- Main -->
+    <main class="flex-1 w-full px-4 sm:px-6 lg:px-8">
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-600 shadow-inner py-4 text-center text-gray-200 text-sm sm:text-base">
+        {{ now|date:"Y" }} Event Management System. All rights reserved.
+    </footer>
+
+</body>
+</html>

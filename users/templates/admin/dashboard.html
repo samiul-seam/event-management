@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+  </head>
+  <body>
+    <div
+      class="fixed inset-0 bg-cover bg-center"
+      style="background-image: url('{% static 'image/bg1.jpg' %}')"
+    ></div>
+    <div class="fixed inset-0 bg-black/30"></div>
+
+    <section class="relative min-h-screen z-30 text-black text-xl">
+      <!-- Navbar -->
+      <header class="bg-white shadow-md">
+        <nav class="container mx-auto px-6 py-3">
+          <div class="flex justify-between items-center">
+            <!-- Desktop Links -->
+            <div class="hidden md:flex space-x-4">
+              <a
+                href="{% url 'admin-dashboard' %}"
+                class="text-gray-700 hover:text-green-600"
+                >Change Role</a
+              >
+              <a
+                href="{% url 'group-list' %}"
+                class="text-gray-700 hover:text-green-600"
+                >View Groups</a
+              >
+              <a
+                href="{% url 'create-group' %}"
+                class="text-gray-700 hover:text-green-600"
+                >Create Group</a
+              >
+              <a
+                  href="{% url 'manager-dashboard' %}"
+                  class="text-gray-700 hover:text-green-600"
+                  >Manager Dashboard</a
+                >
+                <form method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <button
+                    class="text-gray-700 hover:text-green-600"
+                  >
+                    Logout
+                  </button>
+                </form>
+            </div>
+
+              <!-- Mobile Menu Button -->
+              <div class="md:hidden ml-4">
+                <button
+                  id="menu-toggle"
+                  class="text-gray-600 hover:text-gray-800 focus:outline-none"
+                >
+                  <svg
+                    class="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Menu -->
+          <div id="mobile-menu" class="md:hidden hidden mt-4 space-y-2">
+            <a
+                href="{% url 'admin-dashboard' %}"
+                class="block py-2 text-gray-600 hover:text-gray-800"
+                >Change Role</a
+              >
+              <a
+                href="{% url 'group-list' %}"
+                class="block py-2 text-gray-600 hover:text-gray-800"
+                >View Groups</a
+              >
+              <a
+                href="{% url 'create-group' %}"
+                class="block py-2 text-gray-600 hover:text-gray-800"
+                >Create Group</a
+              >
+              <a
+                  href="{% url 'manager-dashboard' %}"
+                  class="block py-2 text-gray-600 hover:text-gray-800"
+                  >Manager Dashboard</a
+                >
+                <form method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <button
+                    class="block py-2 text-gray-600 hover:text-gray-800"
+                  >
+                    Logout
+                  </button>
+                </form>
+              </form>
+          </div>
+        </nav>
+      </header>
+
+      <main>
+        {% block content %} 
+        {% include "admin/user_list.html" %} 
+        {% endblock content %}
+      </main>
+
+      <script>
+        const menuToggle = document.getElementById("menu-toggle");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const userMenuButton = document.getElementById("user-menu-button");
+        const userMenu = document.getElementById("user-menu");
+
+        menuToggle.addEventListener("click", () => {
+          mobileMenu.classList.toggle("hidden");
+        });
+
+        userMenuButton.addEventListener("click", (e) => {
+          e.stopPropagation(); // Prevent outside click from closing immediately
+          userMenu.classList.toggle("hidden");
+        });
+
+        // Close the dropdown when clicking outside
+        window.addEventListener("click", (e) => {
+          if (
+            !userMenu.contains(e.target) &&
+            !userMenuButton.contains(e.target)
+          ) {
+            userMenu.classList.add("hidden");
+          }
+        });
+      </script>
+    </section>
+  </body>
+</html>

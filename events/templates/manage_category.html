@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Categories</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+  </head>
+  <body class="bg-gray-100 p-6">
+    <!-- Background -->
+    <div
+      class="fixed inset-0 bg-cover bg-center"
+      style="background-image: url('{% static 'image/bg8.jpg' %}')"
+    ></div>
+    <div class="fixed inset-0 bg-black/30"></div>
+
+    <section class="relative min-h-screen pt-24 z-30 text-black text-xl">
+
+      {% if messages %}
+                {% for message in messages %}
+                    <div class="px-3 py-2 mb-3 rounded-md bg-gray-700 text-white text-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+      <div class="mb-4 flex justify-between">
+        <a href="{% url 'manager-dashboard' %}" class="text-xl bg-sky-500 p-1 rounded-lg hover:text-sky-600 text-black">Back to Dashboard</a>
+        <button
+          id="show-form-btn"
+          class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          + Add Category
+        </button>
+      </div>
+
+      <!-- Add Category Form (hidden) -->
+      <div id="category-form-container" class="mb-6 hidden">
+        <form
+          method="POST"
+          action="{% url 'add-category' %}"
+          class="p-4 bg-white rounded shadow-md w-1/2"
+        >
+          {% csrf_token %}
+
+          <label class="block mb-2 font-semibold">Category Name</label>
+          {{ category_form.name }}
+
+          <label class="block mb-2 mt-4 font-semibold">Description</label>
+          {{ category_form.description }}
+
+          <button
+            type="submit"
+            class="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          >
+            Save
+          </button>
+        </form>
+      </div>
+
+      <!-- Categories Table -->
+      <table class="min-w-full backdrop-blur-sm shadow-md rounded-lg overflow-hidden">
+        <thead class="bg-green-200">
+          <tr>
+            <th class="py-3 px-6 text-left">#</th>
+            <th class="py-3 px-6 text-left">Category Name</th>
+            <th class="py-3 px-6 text-left">Description</th>
+            <th class="py-3 px-6 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for category in categories %}
+          <tr class="border-b hover:bg-gray-50">
+            <td class="py-3 px-6">{{ forloop.counter }}</td>
+            <td class="py-3 px-6">{{ category.name }}</td>
+            <td class="py-3 px-6">{{ category.description }}</td>
+            <td class="py-3 px-6 flex justify-center gap-2">
+              <a
+                href="{% url 'update-category' category.id %}"
+                class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Edit
+              </a>
+              <form
+                action="{% url 'delete-category' category.id %}"
+                method="POST"
+                class="inline"
+              >
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="text-center py-4 text-gray-500">
+              No categories found.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <script>
+        const showFormBtn = document.getElementById("show-form-btn");
+        const formContainer = document.getElementById(
+          "category-form-container"
+        );
+
+        showFormBtn.addEventListener("click", () => {
+          formContainer.classList.toggle("hidden");
+        });
+      </script>
+      
+    </section>
+  </body>
+</html>

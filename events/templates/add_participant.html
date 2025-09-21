@@ -7,24 +7,40 @@
     <title>Add Participant</title>
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
-<body>
-    <div class="w-1/2 mx-auto mt-8">
-        <div>
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="px-2 py-1 {% if message.tags == 'success' %}bg-green-500{% endif %} ">{{message}}</div>
-                {% endfor %}
-            {% endif %}
-        </div>
+<body class="bg-gray-50 text-gray-800">
 
-        <form method="POST">
+    <!-- Background -->
+    <section class="relative h-[70vh]">
+            <div class="absolute inset-0 bg-cover bg-center"
+                style="background-image: url('{% static 'image/log.jpg' %}');"></div>
+            <div class="absolute inset-0 bg-black/40"></div>
+   
+    <!-- Form Section -->
+    <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-6 -mt-60 z-10 ">
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-3 px-3 py-2 rounded-md mt-7
+                            {% if message.tags == 'success' %}bg-green-500 text-white
+                            {% elif message.tags == 'error' %}bg-red-500 text-white
+                            {% else %}bg-gray-200{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Form -->
+        <form method="POST" class="p-4 rounded-lg text-gray-800 w-full sm:w-3/4 md:w-1/2 lg:w-1/3 text-base sm:text-lg md:text-xl">
             {% csrf_token %}
             {{ participant_form }}
 
-            <button type="submit" class="mb-5 bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">
+            <button type="submit" 
+                    class="w-full sm:w-auto bg-rose-600 hover:bg-rose-700 px-3 py-2 text-white mt-4 rounded-md">
                 Save Participant
             </button>
         </form>
+
     </div>
+    </section>
 </body>
 </html>

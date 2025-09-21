@@ -1,0 +1,35 @@
+<nav class="fixed top-0 left-0 w-full flex justify-between items-center px-4 md:px-8 py-4 text-white backdrop-blur-md z-20">
+  <a href="{% url 'home' %}" class="text-xl hover:text-green-400">Home</a>
+
+  <!-- Desktop Menu -->
+  <ul class="hidden md:flex space-x-8 items-center">
+    <li><a href="#footer" class="hover:text-green-400">About us</a></li>
+    <li><a href="#footer" class="hover:text-green-400">Contact us</a></li>
+    <li>
+      <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="hover:text-green-400">Logout</button>
+      </form>
+    </li>
+  </ul>
+
+  <!-- Mobile Menu Toggle -->
+  <div class="md:hidden relative">
+    <input type="checkbox" id="menu-toggle" class="peer hidden" />
+    <label for="menu-toggle" class="cursor-pointer p-2">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </label>
+
+    <!-- Mobile Menu -->
+    <div class="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg opacity-0 peer-checked:opacity-100 pointer-events-none peer-checked:pointer-events-auto transition-all flex flex-col">
+      <a href="#footer" class="px-4 py-2 hover:text-green-400 border-b border-gray-200">About us</a>
+      <a href="#footer" class="px-4 py-2 hover:text-green-400 border-b border-gray-200">Contact us</a>
+      <form method="POST" action="{% url 'logout' %}" class="px-4 py-2">
+        {% csrf_token %}
+        <button type="submit" class="w-full text-left hover:text-green-400">Logout</button>
+      </form>
+    </div>
+  </div>
+</nav>

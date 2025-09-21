@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth md:scroll-auto">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Management</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+    <style>
+      /* Hide scrollbar for horizontal scroll */
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <section class="relative h-[80vh]">
+      <div
+        class="absolute inset-0 bg-cover bg-center"
+        style="background-image: url('{% static 'image/log.jpg' %}')"
+      ></div>
+      <div class="absolute inset-0 bg-black/40"></div>
+    </section>
+
+    <!-- Hero Text Section -->
+    <div
+      class="absolute inset-0 flex flex-col justify-center items-center text-center px-6 -mt-60 z-10"
+    >
+      <!-- Messages -->
+      {% if messages %} {% for message in messages %}
+      <div
+        class="mb-3 px-3 py-2 rounded-md {% if message.tags == 'success' %}bg-green-500 text-white {% elif message.tags == 'error' %}bg-red-500 text-white {% else %}bg-gray-200 p-2{% endif %}"
+      >
+        {{ message }}
+      </div>
+      {% endfor %} {% endif %}
+
+      <form
+        method="POST"
+        action=""
+        class="p-4 bg-white rounded shadow-md w-1/2"
+      >
+        {% csrf_token %}
+        <label class="block mb-2 font-semibold">Name</label>
+        {{ category_form.name }}
+
+        <label class="block mb-2 mt-4 font-semibold">Description</label>
+        {{ category_form.description }}
+
+        <button
+          type="submit"
+          class="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          Save
+        </button>
+        <div class="mt-4 text-center">
+          <a
+            href="{% url 'manage-category' %}"
+            class="inline-block bg-sky-500 px-4 py-2 rounded-lg hover:bg-sky-600 text-white"
+          >
+            Back
+          </a>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

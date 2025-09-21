@@ -4,24 +4,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Event Form</title>
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
-<body>
-    <div class="w-1/2 mx-auto mt-8">
-        <div>
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="px-2 py-1 {% if message.tags == 'success' %}bg-green-500{% endif %} ">{{message}}</div>
-                {% endfor %}
-            {% endif %}
-        </div>
+<body class="relative">
 
-        <form method="POST">
-            {% csrf_token %}
-            {{ event_form }}
-            <button type="submit" class="mb-5 bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">Submit</button>
-        </form>
-    </div>
+    <!-- Semi-transparent overlay -->
+    <div class="fixed inset-0 bg-black/40"></div>
+
+    <!-- Page Content -->
+    <section class="relative min-h-screen pt-10 z-30 text-black text-base sm:text-lg md:text-xl px-4">
+        <div class="w-full sm:w-3/4 md:w-1/2 lg:w-2/5 mx-auto mt-8">
+
+            <!-- Form -->
+            <form method="POST" enctype="multipart/form-data" class="space-y-4 bg-white bg-opacity-80 p-6 rounded-xl shadow-lg">
+                {% csrf_token %}
+                {% for field in event_form %}
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-green-600">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" 
+                        class="w-full sm:w-auto bg-rose-600 px-4 py-2 text-white rounded-md hover:bg-rose-700 transition">
+                    Submit
+                </button>
+
+                <div class="mt-4 text-center">
+                    <a href="{% url 'manage-event' %}" 
+                        class="inline-block bg-sky-500 px-4 py-2 rounded-lg hover:bg-sky-600 text-white">
+                        Back
+                    </a>
+                </div>
+            </form>
+
+            <div class="h-24 sm:h-40 md:h-48"></div>
+
+        </div>
+    </section>
+
 </body>
 </html>

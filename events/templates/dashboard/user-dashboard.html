@@ -1,113 +1,217 @@
 {% extends 'dashboard/dashboard.html' %}
-{% block title %}User Dashboard{% endblock title %}
-
+{% load static %}
 {% block events %}
+    
+<!-- scroll today and upcoming events  -->
+  <section class="overflow-x-auto scroll-smooth snap-x snap-mandatory mt-10">
+    <div class="flex space-x-4">
 
-<main class="grid gap-6 lg:grid-cols-3 p-6">
-            <!-- Left Column -->
-            <div class="col-span-1 space-y-4">
-                <div class="rounded-2xl bg-white p-4 shadow">
-                    <h3 class="mb-3 text-lg font-semibold">Quick Filters</h3>
-                    <form method="get" class="space-y-3">
-                        <input type="text" name="q"
-                            placeholder="Search events..."
-                            value="{{ request.GET.q }}"
-                            class="w-full rounded-md border px-3 py-2" />
-                        <select name="type"
-                            class="w-full rounded-md border px-3 py-2">
-                            <option value="all" {% if selected_type == "all"
-                                %}selected>All</option>
-                            <option value="upcoming" {% if selected_type ==
-                                "upcoming" %}selected>Upcoming</option>
-                            <option value="past" {% if selected_type == "past"
-                                %}selected>Past</option>
-                        </select>
-                        <button type="submit"
-                            class="w-full rounded-md bg-indigo-600 px-3 py-2 text-white">Apply</button>
-                    </form>
-                </div> 
+    
+    {% for event in events %}
+      
+    <!-- Slide 1 -->
+    {% if event.date == Upcoming %}
+    <div class="snap-center flex-shrink-0 w-full md:w-1/2 relative">
+      <img src="{{event.asset.url}}"
+        class="w-full h-[30vh] md:h-[40vh] object-cover rounded-lg" />
+      <div
+        class="absolute inset-0 bg-black/30 rounded-lg flex flex-col justify-end p-6">
+        <h2 class="text-white text-2xl md:text-3xl font-bold">{{event.name}}</h2>
+        <p class="text-white mt-1">{{event.date}}</p>
+        <button
+          class="mt-3 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg w-max">
+          RSVM
+        </button>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
 
-                <!-- Date Range Search -->
-                <form method="get" action="{% url 'user-dashboard' %}"
-                    class="flex flex-wrap gap-3 items-center bg-white p-4 rounded-2xl shadow">
+  </section>
 
-                    <!-- Start Date -->
-                    <div>
-                        <label for="start_date"
-                            class="block text-sm text-slate-600">Start
-                            Date</label>
-                        <input type="date" name="start_date" id="start_date"
-                            value="{{ request.GET.start_date }}"
-                            class="px-3 py-2 border rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none">
-                    </div>
+  <div id="all-events"></div>
 
-                    <!-- End Date -->
-                    <div>
-                        <label for="end_date"
-                            class="block text-sm text-slate-600">End
-                            Date</label>
-                        <input type="date" name="end_date" id="end_date"
-                            value="{{ request.GET.end_date }}"
-                            class="px-3 py-2 border rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none">
-                    </div>
+<!-- details view -->
+  <section class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 p-6">
+    <!-- Total Events -->
+    <a href="{% url 'user-dashboard' %}?type=all#all-events" 
+    class="bg-cyan-300 shadow-lg shadow-cyan-500/90 hover:shadow-cyan-800/80 rounded-2xl p-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-md text-slate-700">Total Events</div>
+        <div class="mt-1 text-2xl font-semibold">{{ counts.total_events }}</div>
+      </div>
 
-                    <div class="pt-5">
-                        <button type="submit"
-                            class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-xl shadow">
-                            Filter
-                        </button>
-                    </div>
-                </form>
-            </div>
+      <div class="rounded-full bg-indigo-50 p-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
+        </svg>
+      </div>
+    </div>
+    </a>
 
-            <!-- Events List -->
-            <div class="col-span-2 space-y-4">
-                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    <a href="{% url 'user-dashboard' %}?type=all"
-                        class="bg-cyan-500 text-white rounded-2xl p-3 text-center">
-                        All Events
-                    </a>
-                    <a href="{% url 'user-dashboard' %}?type=today"
-                        class="bg-cyan-500 text-white rounded-2xl p-3 text-center">
-                        Today
-                    </a>
-                    <a href="{% url 'user-dashboard' %}?type=upcoming"
-                        class="bg-cyan-500 text-white rounded-2xl p-3 text-center ">
-                        Upcoming
-                    </a>
-                    <a href="{% url 'user-dashboard' %}?type=past"
-                        class="bg-cyan-500 text-white rounded-2xl p-3 text-center">
-                        Past
-                    </a>
-                </div>
+    <!-- Upcoming -->
+    <a href="{% url 'user-dashboard' %}?type=upcoming#all-events"
+    class="bg-cyan-300 shadow-lg shadow-cyan-500/90 hover:shadow-cyan-800/80 rounded-2xl p-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-md text-slate-700">Upcoming</div>
+        <div class="mt-1 text-2xl font-semibold">{{ counts.upcoming }}</div>
+      </div>
 
-                <!-- Events Grid -->
-                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    {% for event in events %}
-                    <div
-                        class="rounded-2xl bg-green-200 p-4 shadow hover:shadow-lg transition text-center">
-                        <h3 class="text-lg font-semibold mb-2">{{ event.name }}</h3>
-                        <p class="text-sm text-slate-500"><span
-                                class="font-medium">Category:</span> {{ event.category }}</p>
-                        <p class="text-sm text-slate-500"><span
-                                class="font-medium">Date:</span> {{ event.date }}</p>
-                        <p class="text-sm text-slate-500"><span
-                                class="font-medium">Location:</span> {{ event.location }}</p>
-                        <p class="text-sm text-slate-500"><span
-                                class="font-medium">Participants:</span> {{ event.included_in.count }}</p>
-                        <button onclick="const d=document.getElementById('desc-{{ event.id }}'); d.classList.toggle('hidden');" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
-                                description
-                        </button>
-                        <div id="desc-{{ event.id }}" class="hidden mt-2 p-2 bg-white rounded text-left text-gray-700"> {{ event.description }} </div>
-                    </div>
-                   {% empty %}
-                    <p class="col-span-full text-center text-slate-500">No
-                        events found.</p>
-                   {% endfor %} 
-                </div>
-            </div>
-        </main>
+      <div class="rounded-full bg-indigo-50 p-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+        </svg>
+      </div>
+    </div>
+    </a>
+
+    <!-- Past -->
+    <a href="{% url 'user-dashboard' %}?type=past#all-events" 
+    class="bg-cyan-300 shadow-lg shadow-cyan-500/90 hover:shadow-cyan-800/80 rounded-2xl p-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-md text-slate-700">Past Events</div>
+        <div class="mt-1 text-2xl font-semibold">{{ counts.past }}</div>
+      </div>
+
+      <div class="rounded-full bg-emerald-50 p-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+        </svg>
+      </div>
+    </div>
+    </a>
+
+    <!-- Today -->
+    <a href="{% url 'user-dashboard' %}?type=today#all-events" 
+    class="bg-cyan-300 shadow-lg shadow-cyan-500/90 hover:shadow-cyan-800/80 rounded-2xl p-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-md text-slate-700">Today</div>
+        <div class="mt-1 text-2xl font-semibold"> {{ counts.today }}
+        </div>
+      </div>
+      <div class="rounded-full bg-pink-50 p-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="currentColor"
+          viewBox="0 0 24 24">
+          <path
+            d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zM6 20a6 6 0 0112 0H6z" />
+        </svg>
+      </div>
+    </div>
+    </a>
+  </section>
 
 
+<section class="flex justify-between gap-3">
 
-      {% endblock events %}
+  <!-- search by name -->
+  <div class="rounded-2xl bg-white p-4 shadow">
+      <h3 class="mb-3 text-lg font-semibold">Quick Filters</h3>
+      <form method="get" class="space-y-3">
+          <input type="text" name="q"
+              placeholder="Search events..."
+              value="{{ request.GET.q }}"
+              class="w-full rounded-md border px-3 py-2" />
+          <button type="submit"
+              class="w-full rounded-md bg-indigo-600 px-3 py-2 text-white">Apply</button>
+      </form>
+  </div> 
+  <!-- Date Range Search -->
+  <form method="get" action="{% url 'manager-dashboard' %}"
+        class="flex justify-between gap-6 items-center bg-white p-4 rounded-2xl shadow-md mt-7">
+
+    <!-- Start Date -->
+    <div>
+      <label for="start_date" class="block text-sm text-slate-600">
+        Start Date
+      </label>
+      <input type="date" name="start_date" id="start_date"
+             value="{{ request.GET.start_date }}"
+             class="px-3 py-2 border rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none">
+    </div>
+
+    <!-- End Date -->
+    <div>
+      <label for="end_date" class="block text-sm text-slate-600">
+        End Date
+      </label>
+      <input type="date" name="end_date" id="end_date"
+             value="{{ request.GET.end_date }}"
+             class="px-3 py-2 border rounded-xl focus:ring-2 focus:ring-cyan-500 focus:outline-none">
+    </div>
+
+    <!-- Submit Button -->
+    <div class="pt-5">
+      <button type="submit"
+              class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-xl shadow">
+        Filter
+      </button>
+    </div>
+  </form>
+</section>
+
+  <!-- All Events -->
+  <section class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 p-4">
+    
+    {% for event in events %}
+        
+    <!-- Event Card 1 -->
+    <div
+      class="rounded-2xl bg-green-200 p-4 shadow hover:shadow-lg transition text-center flex flex-col items-center">
+      <img src=" {{event.asset.url}} "
+        class="w-full h-48 object-cover rounded-xl mb-4">
+      <div class="mb-4">
+        <h3 class="text-xl font-bold"> {{event.name}} </h3>
+        <p class="text-gray-700"> {{ event.date }} </p>
+        <p class="text-gray-500"> {{ event.location }} </p>
+        <p class="text-gray-500"> {{ event.category }} </p>
+      </div> 
+      <div class="flex gap-2">
+        <a href="#"
+          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Details</a>
+        <a href="#"
+          class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">RSVP</a>
+      </div>
+    </div>
+    {% empty %}
+      <p class="col-span-full text-center text-slate-500">No events found.</p>
+
+    {% endfor %}
+
+  </section>
+
+
+{% endblock events %}

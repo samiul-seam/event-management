@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Group</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-10">
+
+    <h1 class="text-3xl font-bold mb-6">Delete Groups</h1>
+
+    {% if messages %}
+        <div class="mb-4 w-full max-w-md">
+            {% for message in messages %}
+                <div class="p-3 rounded mb-2 {% if message.tags == 'success' %}bg-green-200 text-green-800{% else %}bg-red-200 text-red-800{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="w-full max-w-md bg-white p-6 rounded shadow">
+        {% if groups %}
+            <ul>
+                {% for group in groups %}
+                    <li class="flex justify-between items-center border-b py-2">
+                        <span class="font-medium">{{ group.name }}</span>
+                        <form action="{% url 'delete-group' group.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                                Delete
+                            </button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">No groups available.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

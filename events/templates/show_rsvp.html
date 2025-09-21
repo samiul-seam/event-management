@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My RSVP Event</title>
+  <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body class="bg-cover bg-center min-h-screen" style="background-image: url('{% static 'image/bg3.jpg' %}');">
+
+<div class="p-6 bg-black bg-opacity-50 min-h-screen flex flex-col items-center">
+
+  <!-- Back Button -->
+  <div class="self-start mb-6">
+    <a href="{% url 'manager-dashboard' %}" 
+       class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
+       ← Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Title -->
+  <h1 class="text-3xl text-white font-bold text-center mb-6">My RSVP Event</h1>
+
+  <!-- Event Card -->
+  {% if events %}
+    {% for event in events %}
+      <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 w-full max-w-md">
+        <img src="{{ event.asset.url }}" class="w-full h-40 object-cover">
+        <div class="p-1 text-center">
+          <h2 class="text-lg font-semibold text-gray-800 mb-1">{{ event.name }}</h2>
+          <p class="text-gray-600 text-sm mb-1">{{ event.date }} | {{ event.time }}</p>
+          <p class="text-gray-600 text-sm mb-2">{{ event.location }}</p>
+          <p class="text-gray-700 text-sm">{{ event.description|truncatechars:60 }}</p>
+        
+          <form method="post" action="{% url 'remove-rsvp' event.id %}" class="mt-3">
+            {% csrf_token %}
+            <button type="submit" class=" bg-rose-500 hover:bg-rose-600 text-black px-4 p-2 rounded-lg">
+              Remove RSVP
+            </button>
+          </form>  
+        
+    {% endfor %}
+  {% else %}
+    <p class="text-white text-center">You have not RSVP'd to any event yet.</p>
+  {% endif %}
+
+</div>
+
+</body>
+</html>

@@ -1,160 +1,234 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth md:scroll-auto">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}{% endblock title %}</title>
-    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <style>
+    /* Hide scrollbar for horizontal scroll */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
   </head>
 
-  <body class="bg-slate-50">
-    <!-- Header -->
-    <header
-      class="mb-6 flex items-center justify-between p-6 bg-emerald-200 rounded-md"
-    >
-      <div class="text-teal-500">
-        <h1 class="text-2xl font-bold">Organizer Dashboard</h1>
-        <p class="text-sm text-teal-600">
-          Overview of events, quick stats and filters
-        </p>
-      </div>
-      <div class="flex items-center gap-3">
-        <div class="flex gap-6">
-          <a
-            href="{% url 'manager-dashboard' %}"
-            class="text-gray-700 hover:text-teal-600 font-medium"
-            >Manager Dashboard</a
-          >
-          <a
-            href="{% url 'user-dashboard' %}"
-            class="text-gray-700 hover:text-teal-600 font-medium"
-            >User Dashboard</a
-          >
-        </div>
-        <a
-          href="{% url 'create-event' %}"
-          class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          + Create Event
-        </a>
-        <a
-          href="{% url 'add-participant' %}"
-          class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-2xl"
-        >
-          + Add Participant
-        </a>
-      </div>
-    </header>
+<body class="bg-gray-50 text-gray-800" id="top">
 
-    <!-- Stats Grid -->
-    <section class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 p-6">
-      <!-- Total Events -->
-      <div class="bg-cyan-500 shadow-lg shadow-cyan-500/80 rounded-2xl p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="text-md text-slate-700">Total Events</div>
-            <div class="mt-1 text-2xl font-semibold">{{ counts.total }}</div>
-          </div>
+    <!-- nav seciton -->
+    <section class="relative h-[70vh]">
+      <div class="absolute inset-0 bg-cover bg-center"
+        style="background-image: url('{% static 'image/nav_back.jpg' %}');"></div>
+      <div class="absolute inset-0 bg-black/30"></div>
 
-          <div class="rounded-full bg-indigo-50 p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
+      
+      {% comment %} nav  {% endcomment %}
+      
+      {% if is_admin %}
+          {% include "nav/admin_nav.html" %}
+      {% elif is_organizer %}
+          {% include "nav/organizer_nav.html" %}
+      {% elif is_participant %}
+          {% include "nav/participant_nav.html" %}
+      {% else %}
+          {% include "non_logged_nav.html" %}
+      {% endif %}
 
-      <!-- Upcoming -->
-      <div class="bg-cyan-500 shadow-lg shadow-cyan-500/70 rounded-2xl p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="text-md text-slate-700">Upcoming</div>
-            <div class="mt-1 text-2xl font-semibold">{{ counts.upcoming }}</div>
-          </div>
 
-          <div class="rounded-full bg-indigo-50 p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Past -->
-      <div class="bg-cyan-500 shadow-lg shadow-cyan-500/70 rounded-2xl p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="text-md text-slate-700">Past Events</div>
-            <div class="mt-1 text-2xl font-semibold">{{ counts.past }}</div>
-          </div>
-
-          <div class="rounded-full bg-emerald-50 p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Participants -->
-      <div class="bg-cyan-500 shadow-lg shadow-cyan-500/70 rounded-2xl p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="text-md text-slate-700">Participants</div>
-            <div class="mt-1 text-2xl font-semibold">
-              {{ counts.participants }}
-            </div>
-          </div>
-          <div class="rounded-full bg-pink-50 p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zM6 20a6 6 0 0112 0H6z"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
     </section>
 
-    {% block events %} {% endblock events %}
-  </body>
-</html>
+    <!-- Hero Text Section -->
+    <section
+    class="absolute inset-0 flex flex-col justify-center items-center text-center px-6 mt-6 z-10">
+    <h1
+      class="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg mb-4">
+      Discover Amazing Events
+    </h1>
+    <p
+      class="text-lg md:text-2xl text-gray-200 drop-shadow-md mb-6 max-w-2xl">
+      Join, explore, and book events happening near you. Experience
+      unforgettable moments with TaskMaster.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4">
+      <a href="#all-events"
+        class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition duration-300">
+        Check Events
+      </a>
+
+      <!-- This button opens popup -->
+      <a href="#subscribe"
+        class="bg-gray-200 border-2 border-white hover:bg-white hover:text-gray-800 text-black px-6 py-3 rounded-lg font-semibold shadow-lg transition duration-300">
+        Subscribe Now
+      </a>
+    </div>
+  </section>
+
+
+    <div id="subscribe"
+      class="fixed inset-0 bg-black/40 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300
+         target:opacity-100 target:pointer-events-auto z-30">
+      <div class="bg-white p-6 rounded-xl shadow-lg w-80 text-center">
+        <p class="text-gray-600">This service is not available right now </p>
+        <a href="#"
+          class="mt-4 inline-block bg-red-500 text-white px-4 py-2 rounded-lg">
+          Close
+        </a>
+      </div>
+    </div>
+
+    </div>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="px-4 py-3 mb-3 rounded-md bg-rose-700 text-white text-center">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+  </section>
+
+
+  
+<!-- Info/Text Section -->
+  <section class="container mx-auto px-6 py-10">    
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold">Why Choose Event Management?</h2>
+        <p class="text-gray-600 mt-4 max-w-2xl mx-auto">
+          Manage, discover, and join events easily. Whether it's a meetup,
+          conference, or festival,
+          This keeps you connected and organized.
+        </p>
+      </div>
+
+    <div class="flex justify-center gap-8">
+    <!-- Card 1 -->
+    <div
+        class="group block bg-green-200 shadow-lg shadow-green-600/90 hover:shadow-green-800/80 rounded-2xl p-6 flex flex-col text-center items-center">
+        
+        <img src="{% static 'image/bg10.jpg' %}" alt="Ticket"
+            class="w-16 h-16 mb-4 rounded-full object-cover transition duration-300 group-hover:scale-110">
+        
+        <h3 class="text-xl font-semibold mb-2 transition duration-300 group-hover:text-green-600">
+            Your RSVP
+        </h3>
+        
+        <p class="text-gray-500 transition duration-300 group-hover:text-gray-700 text-sm mb-4">
+            Reserve your spot with a single click and get confirmation instantly.
+        </p>
+        
+        <a href="{% url 'show-rsvp' %}" 
+          class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg inline-block">
+          Your RSVP
+        </a>
+    </div>
+
+
+    <!-- Card 2 -->
+      <div
+          class="group block bg-green-200 shadow-lg shadow-green-600/90 hover:shadow-green-800/80 rounded-2xl p-4 flex flex-col text-center items-center">
+          <img src="{% static 'image/bg11.jpg' %}" alt="Community"
+            class="w-16 h-16 mb-4 rounded-full object-cover transition duration-300 group-hover:scale-110">
+          <h3
+            class="text-xl font-semibold mb-2 transition duration-300 group-hover:text-green-600">Join
+            Community</h3>
+          <p
+            class="text-gray-500 transition duration-300 group-hover:text-gray-700">Connect
+            with like-minded people and share experiences at events.</p>
+          <a href="https://phitron.io/" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg inline-block"> click here </a>
+      </div>
+    </div>
+  </section>
+
+  
+  {% block events %}
+    
+  {% endblock events %}
+    
+
+  <!-- footer  -->
+  <footer class="bg-gray-800 text-white py-12" id="footer">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-wrap justify-between">
+
+        <!-- About -->
+        <div class="w-full md:w-1/4 mb-8 md:mb-0 text-center md:text-left">
+          <h3 class="text-lg font-semibold mb-4">TaskMaster from base</h3>
+          <p class="text-gray-400">
+            Empowering teams with efficient task management solutions.
+          </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="w-full md:w-1/4 mb-8 md:mb-0 text-center md:text-left">
+          <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+          <ul class="text-gray-400 space-y-2">
+            <li><a href="#"
+                class="hover:text-white transition duration-300">Home</a></li>
+            <li><a href="#"
+                class="hover:text-white transition duration-300">Features</a></li>
+            <li><a href="#"
+                class="hover:text-white transition duration-300">Pricing</a></li>
+            <li><a href="#"
+                class="hover:text-white transition duration-300">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Connect -->
+        <div class="w-full md:w-1/4 mb-8 md:mb-0 text-center md:text-left">
+          <h4 class="text-lg font-semibold mb-4">Connect</h4>
+          <ul class="flex justify-center md:justify-start space-x-4">
+            <li>
+              <a href="https://www.facebook.com/mdsamiul.haque.1675"
+                target="_blank"
+                class="hover:text-white transition">
+                <img src="image/facebook.png" alt="Facebook" class="w-7">
+              </a>
+            </li>
+            <li>
+              <a href="https://www.instagram.com/__.samiul.haque.__"
+                target="_blank"
+                class="hover:text-white transition">
+                <img src="icon/instagram.png" alt="Instagram" class="w-7">
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/md-samiul-haque-seam-695833361"
+                target="_blank"
+                class="hover:text-white transition">
+                <img src="icon/linkedin.png" alt="LinkedIn" class="w-7">
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="w-full md:w-1/4 text-center md:text-left">
+          <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
+          <form class="flex">
+            <input type="email" placeholder="Your email"
+              class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required />
+            <button type="submit"
+              class="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition duration-300">
+              Subscribe
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <div class="text-center">
+        <a href="#top" class="bg-gray-700 p-2 sm:mt-10 rounded-2xl ">Back to top</a>
+      </div>
+
+      <!-- Copyright -->
+      <div
+        class="border-t border-gray-700 mt-12 pt-8 text-sm text-center text-gray-400">
+        &copy; 2025 TaskMaster. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+</body>
