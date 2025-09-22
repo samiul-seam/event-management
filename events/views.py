@@ -102,7 +102,7 @@ def update_event(request, id):
     event_form = EventModelForm(categories=categories, participants=participants, instance=event)
 
     if request.method == "POST":
-        event_form = EventModelForm(request.POST,categories=categories,participants=participants,instance=event)
+        event_form = EventModelForm(request.POST, request.FILES, categories=categories,participants=participants,instance=event)
 
         if event_form.is_valid():
             event_form.save()

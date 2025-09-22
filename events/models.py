@@ -18,8 +18,8 @@ class Event(models.Model):
     time = models.TimeField()
     location = models.CharField(max_length=250)
     asset = models.ImageField(
-        upload_to='tasks_asset', blank=True, null=True,
-        default='tasks_asset/default_img.jpg'
+        upload_to='event_asset', blank=True, null=True,
+        default='event_asset/default_img.jpg'
     )
 
     category = models.ForeignKey(
