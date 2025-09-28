@@ -12,7 +12,7 @@ def notify_participants_on_event_creation(sender, instance, action, **kwargs):
 
         send_mail(
             subject="New Event Assigned",
-            message=f"You have been assigned to the event: {instance.name} on {instance.location} at {instance.date} ",
+            message = f"🎉 Congratulations! 🎉\n\nYou have been successfully assigned to the following event:\n📌 Event: {instance.name}\n📍 Location: {instance.location}\n📅 Date: {instance.date}\nWe look forward to seeing you there! ",
             from_email="mdsamiulhaque682@gmail.com",
             recipient_list=assigned_emails,
             fail_silently=False
@@ -26,8 +26,8 @@ def notify_participant_on_rsvp(sender, instance, created, **kwargs):
 
         send_mail(
             "RSVP Confirmation",
-            f"Hi {user.username}, you have RSVP'd for the event: {event.name} on {event.date}.",
-            "mdsamiulhaque682@gmail.com",
+            f"Hi {user.username}, you have RSVP'd for the event:\n📌 Event: {event.name}\n📅 Date: {event.date}\n📍 Location:{event.location}.",
+            from_email="mdsamiulhaque682@gmail.com",
             recipient_list=[user.email],
             fail_silently=False
         )
