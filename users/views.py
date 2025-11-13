@@ -70,8 +70,6 @@ class ActiveUser(View):
             return HttpResponse('This user does not exist')
 
 
-
-
 # Updated to class-based view
 class AdminDashboard(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     permission_required = 'auth.add_group'
