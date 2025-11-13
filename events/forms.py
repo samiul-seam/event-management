@@ -1,6 +1,7 @@
 from django import forms
 from events.models import Event, Category
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 class StyledFormMixin:
@@ -79,3 +80,5 @@ class CategoryForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 4, 'class': 'border rounded p-2 w-full'}),
             'name': forms.TextInput(attrs={'class': 'border rounded p-2 w-full'})
         }
+
+

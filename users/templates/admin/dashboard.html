@@ -37,7 +37,7 @@
                 >Create Group</a
               >
               <a
-                  href="{% url 'manager-dashboard' %}"
+                  href="{% url 'dashboard' %}"
                   class="text-gray-700 hover:text-green-600"
                   >Manager Dashboard</a
                 >
@@ -93,9 +93,9 @@
                 >Create Group</a
               >
               <a
-                  href="{% url 'manager-dashboard' %}"
+                  href="{% url 'dashboard' %}"
                   class="block py-2 text-gray-600 hover:text-gray-800"
-                  >Manager Dashboard</a
+                  >Dashboard</a
                 >
                 <form method="post" action="{% url 'logout' %}">
                   {% csrf_token %}

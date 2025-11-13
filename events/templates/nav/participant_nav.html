@@ -5,6 +5,7 @@
   <ul class="hidden md:flex space-x-8 items-center">
     <li><a href="#footer" class="hover:text-green-400">About us</a></li>
     <li><a href="#footer" class="hover:text-green-400">Contact us</a></li>
+    <li><a href="{% url 'profile' %}" class="hover:text-green-400">profile</a></li>
     <li>
       <form method="POST" action="{% url 'logout' %}">
         {% csrf_token %}

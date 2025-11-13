@@ -4,6 +4,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Permission, Group
 from events.forms import StyledFormMixin
 from django.contrib.auth.forms import AuthenticationForm
+from users.models import CustomUser
+
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class CustomRegistrationForm(StyledFormMixin, forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput)
@@ -60,9 +66,11 @@ class CustomRegistrationForm(StyledFormMixin, forms.ModelForm):
 
         return cleaned_data
 
+
 class LoginForm(StyledFormMixin, AuthenticationForm):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, **kwargs)
+
 
 class CreateGroupForm(StyledFormMixin, forms.ModelForm):
     permissions = forms.ModelMultipleChoiceField(
@@ -76,9 +84,28 @@ class CreateGroupForm(StyledFormMixin, forms.ModelForm):
         model = Group
         fields = ['name', 'permissions']
 
+
 class AssignRoleForm(StyledFormMixin, forms.Form):
     role = forms.ModelChoiceField(
         queryset=Group.objects.all(),
         empty_label="Select a Role"
     )
     
+
+class EditProfileForm(StyledFormMixin, forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'first_name', 'last_name', 'number', 'profile_image']
+
+
+class CustomPasswordChangeForm(StyledFormMixin, PasswordChangeForm):
+    pass
+
+
+class CustomPasswordResetForm(StyledFormMixin, PasswordResetForm):
+    pass
+
+
+class CustomPasswordResetConfirmForm(StyledFormMixin, SetPasswordForm):
+    pass
+

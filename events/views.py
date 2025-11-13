@@ -2,12 +2,20 @@ from django.http import HttpResponse
 from events.forms import EventModelForm , CategoryForm , ParticipantForm
 from django.contrib import messages
 from datetime import date
-from django.db.models import Q, Count, Max, Min, Avg
+from django.db.models import Q, Count
 from events.models import Category , Event , RSVP
 from django.shortcuts import render , redirect
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
 from users.views import is_admin
+
+from django.contrib.auth.mixins import LoginRequiredMixin , PermissionRequiredMixin
+from django.views.generic import TemplateView, UpdateView
+from django.views.generic import CreateView , DeleteView
+from django.views.generic.base import ContextMixin , View
+from django.urls import reverse_lazy
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 def is_organizer(user):
@@ -17,112 +25,142 @@ def is_participant(user):
     return user.groups.filter(name='User').exists()
 
 
-@permission_required('events.view_event' , login_url='no-permission')
-def manager_dashboard(request):
-    type = request.GET.get('type', 'all')
-    query = request.GET.get('q', '')
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
+# Updated to class-based view
+class Dashboard(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = 'events.view_event'
+    login_url = 'sign-in'
+    template_name = 'dashboard/main-dashboard.html'
 
-    counts = Event.objects.aggregate(
-        total_events=Count('id'),
-        upcoming=Count('id', filter=Q(date__gte=date.today())),
-        past=Count('id', filter=Q(date__lt=date.today())),
-        today=Count('id', filter=Q(date=date.today()))
-    )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request = self.request
 
-    base_query = Event.objects.select_related("category").prefetch_related("participants")
+        type = request.GET.get('type', 'all')
+        query = request.GET.get('q', '')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
 
-    if type == "today":
-        base_query = base_query.filter(date=date.today())
-    elif type == "upcoming":
-        base_query = base_query.filter(date__gte=date.today())
-    elif type == "past":
-        base_query = base_query.filter(date__lt=date.today())
-
-    if query:
-        base_query = base_query.filter(
-            Q(name__icontains=query) |
-            Q(location__icontains=query) |
-            Q(category__name__icontains=query)
+        counts = Event.objects.aggregate(
+            total_events=Count('id'),
+            upcoming=Count('id', filter=Q(date__gte=date.today())),
+            past=Count('id', filter=Q(date__lt=date.today())),
+            today=Count('id', filter=Q(date=date.today()))
         )
 
-    if start_date and end_date:
-        base_query = base_query.filter(date__range=[start_date, end_date])
-    elif start_date:
-        base_query = base_query.filter(date__gte=start_date)
-    elif end_date:
-        base_query = base_query.filter(date__lte=end_date)
+        base_query = Event.objects.select_related("category").prefetch_related("participants")
 
-    events = base_query.all()
+        if type == "today":
+            base_query = base_query.filter(date=date.today())
+        elif type == "upcoming":
+            base_query = base_query.filter(date__gte=date.today())
+        elif type == "past":
+            base_query = base_query.filter(date__lt=date.today())
 
-    context = {
-        "events": events,
-        "counts": counts,
-        "selected_type": type,
-        "query": query,
-        "start_date": start_date,
-        "end_date": end_date,
-        "today": date.today(),
-        "is_admin": request.user.groups.filter(name="Admin").exists(),
-        "is_organizer": request.user.groups.filter(name="Organizer").exists(),
-        "is_participant": request.user.groups.filter(name="User").exists(),
-    }
-    return render(request, "dashboard/manager-dashboard.html", context)
+        if query:
+            base_query = base_query.filter(
+                Q(name__icontains=query) |
+                Q(location__icontains=query) |
+                Q(category__name__icontains=query)
+            )
 
-@user_passes_test(is_participant, login_url='no-permission')
-def user_dashboard(request):
-    return render(request, "dashboard/user-dashboard.html")
+        if start_date and end_date:
+            base_query = base_query.filter(date__range=[start_date, end_date])
+        elif start_date:
+            base_query = base_query.filter(date__gte=start_date)
+        elif end_date:
+            base_query = base_query.filter(date__lte=end_date)
+
+        events = base_query.all()
+
+        user_groups = set(request.user.groups.values_list('name', flat=True))
+
+        context.update({
+            "events": events,
+            "counts": counts,
+            "selected_type": type,
+            "query": query,
+            "start_date": start_date,
+            "end_date": end_date,
+            "today": date.today(),
+            "is_admin": "Admin" in user_groups,
+            "is_organizer": "Organizer" in user_groups,
+            "is_participant": "User" in user_groups,
+        })
+
+        return context
 
 
-@login_required
-@permission_required("events.add_event", login_url='no-permission')
-def create_event(request):
-    categories = Category.objects.all()
-    participants = User.objects.all()
+# Updated to class-based view
+class CreateEvent(ContextMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = 'events.add_event'
+    login_url = 'sign-in'
+    template_name = 'event_form.html'
+    success_url = 'manage-event'
 
-    if request.method == "POST":
-        event_form = EventModelForm(request.POST, request.FILES, categories=categories, participants=participants)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['event_form'] = kwargs.get('event_form', EventModelForm())
+        context['categories'] = Category.objects.all()
+        context['participants'] = User.objects.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        event_form = EventModelForm(request.POST, request.FILES)
+
         if event_form.is_valid():
             event_form.save()
             messages.success(request, "Event Created Successfully")
-            return redirect('manage-event')
-    else:
-        event_form = EventModelForm(categories=categories, participants=participants)
+            return redirect(self.success_url)
 
-    return render(request, "event_form.html", {"event_form": event_form})
- 
+        context = self.get_context_data(event_form=event_form)
+        return render(request, self.template_name, context)
 
-@login_required
-@permission_required("events.change_event", login_url='no-permission')
-def update_event(request, id):
-    event = Event.objects.get(id=id)
-    categories = Category.objects.all()
-    participants = User.objects.all()
-    event_form = EventModelForm(categories=categories, participants=participants, instance=event)
 
-    if request.method == "POST":
-        event_form = EventModelForm(request.POST, request.FILES, categories=categories,participants=participants,instance=event)
+
+# Updated to class-based view
+class UpdateEvent(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    permission_required ='events.change_event'
+    login_url = 'sign-in'
+    model = Event
+    form_class = EventModelForm
+    template_name = 'event_form.html'
+    context_object_name = 'event'
+    pk_url_kwarg = 'id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["event_form"] = self.get_form()
+        context['categories'] = Category.objects.all()
+        context['participants'] = User.objects.all()
+
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        event_form = EventModelForm(request.POST, request.FILES, instance=self.object)
 
         if event_form.is_valid():
             event_form.save()
             messages.success(request, "Event Updated Successfully")
             return redirect('manage-event')
 
-    context = {"event_form": event_form}
-    return render(request, "event_form.html", context)
 
 
-@login_required
-@permission_required("events.delete_event", login_url='no-permission')
-def delete_event(request, id):
-    if request.method == 'POST':
-        event = Event.objects.get(id=id)
-        event.delete()
-        return redirect('manage-event')
-    else:
-        messages.error(request, 'Something went wrong')
-        return redirect('manage-event')
+# Updated to class-based view
+class DeleteTask(LoginRequiredMixin, PermissionRequiredMixin , DeleteView):
+    permission_required = 'events.delete_event'
+    login_url = 'sign-in'
+    model = Event
+    success_url = reverse_lazy('dashboard') 
+    pk_url_kwarg = 'id'
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Event Deleted Successfully')
+        return super().delete(request, *args, **kwargs)
 
 
 @login_required
@@ -145,15 +183,11 @@ def add_category(request):
     return render(request, "category_form.html", {"categoryform": form})
 
 
-@login_required
-@user_passes_test(is_organizer, login_url='no-permission')
 def manage_event(request):
     events = Event.objects.all()
     return render(request, 'manage_event.html' , {'events': events})
 
 
-@login_required
-@user_passes_test(is_organizer, login_url='no-permission')
 def manage_category(request):
     categories = Category.objects.all()
     form = CategoryForm()
@@ -227,7 +261,7 @@ def rsvp_event(request, event_id):
         else:
             messages.info(request, f"You already RSVP'd for {event.name}.")
 
-    return redirect("manager-dashboard")
+    return redirect("dashboard")
 
 
 
@@ -253,4 +287,4 @@ def remove_rsvp(request, id):
     else:
         messages.error(request, "Invalid request method.")
 
-    return redirect('manager-dashboard')
+    return redirect('dashboard')

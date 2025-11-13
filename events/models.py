@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -10,7 +11,7 @@ class Category(models.Model):
 
 
 class Event(models.Model):
-    participants = models.ManyToManyField(User, through='RSVP', blank=True, related_name='events')
+    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, through='RSVP', blank=True, related_name='events')
 
     name = models.CharField(max_length=250)
     description = models.TextField(blank=True)
@@ -37,7 +38,7 @@ class Event(models.Model):
         return f"{self.name} — {self.date} {self.time}"
 
 class RSVP(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rsvps')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='rsvps')
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='rsvps')
     timestamp = models.DateTimeField(auto_now_add=True)
 

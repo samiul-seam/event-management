@@ -5,6 +5,7 @@
   <ul class="hidden md:flex space-x-8 items-center">
     <li><a href="{% url 'manage-event' %}" class="hover:text-green-400">Manage Events</a></li>
     <li><a href="{% url 'manage-category' %}" class="hover:text-green-400">Manage Categories</a></li>
+    <li><a href="{% url 'profile' %}" class="hover:text-green-400">profile</a></li>
     <li>
       <form method="POST" action="{% url 'logout' %}">
         {% csrf_token %}
