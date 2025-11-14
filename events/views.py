@@ -151,7 +151,7 @@ class UpdateEvent(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
 
 
 # Updated to class-based view
-class DeleteTask(LoginRequiredMixin, PermissionRequiredMixin , DeleteView):
+class DeleteEvent(LoginRequiredMixin, PermissionRequiredMixin , DeleteView):
     permission_required = 'events.delete_event'
     login_url = 'sign-in'
     model = Event
