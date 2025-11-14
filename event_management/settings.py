@@ -78,14 +78,13 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 #     }
 # }
 
-
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://event_manager_db_z29k_user:pexwhaEmEsKtF7RH3RZaJ5HlNRPIIdMd@dpg-d4atd3qli9vc73dk7p70-a.oregon-postgres.render.com/event_manager_db_z29k',
-        conn_max_age=600
+        default=config('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
     )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
