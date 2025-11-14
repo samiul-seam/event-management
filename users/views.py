@@ -40,7 +40,8 @@ class SignUp(CreateView):
     
     def form_invalid(self, form):
         print("form is not found")
-        response = super().form_invalid(form)
+        return super().form_invalid(form)
+
     
     
 
