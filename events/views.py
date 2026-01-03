@@ -6,8 +6,6 @@ from django.db.models import Q, Count
 from events.models import Category , Event , RSVP
 from django.shortcuts import render , redirect
 from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
-from users.views import is_admin
-
 from django.contrib.auth.mixins import LoginRequiredMixin , PermissionRequiredMixin
 from django.views.generic import TemplateView, UpdateView
 from django.views.generic import CreateView , DeleteView
