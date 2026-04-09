@@ -32,4 +32,4 @@ def assign_role(sender , instance , created ,**kwargs):
     if created:
         participant_group , created = Group.objects.get_or_create(name='User')
         instance.groups.add(participant_group)
-        instance.save()
+        instance.save() 
