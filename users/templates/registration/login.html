@@ -4,71 +4,89 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Event Form</title>
+    <title>Sign In</title>
     <link rel="stylesheet" href="{% static 'css/output.css' %}" />
   </head>
   <body class="relative">
+
     <!-- Background -->
-    <div
-      class="fixed inset-0 bg-cover bg-center"
-      style="background-image: url('{% static 'image/bg7.jpg' %}')"
-    ></div>
-    <div class="fixed inset-0 bg-black/30"></div>
+    <div class="fixed inset-0 bg-cover bg-center"
+      style="background-image: url('{% static 'image/bg7.jpg' %}');"></div>
+    <div class="fixed inset-0 bg-black/60"></div>
 
     <!-- Navbar -->
     <div
-      class="fixed top-0 left-0 w-full flex justify-between items-center px-6 md:px-8 py-4 backdrop-blur-md z-20"
-    >
-      <h3 class="text-lg font-bold text-white">Event Form</h3>
+      class="fixed top-0 left-0 w-full flex justify-between items-center px-6 md:px-8 py-4 bg-white/5 border-b border-white/10 backdrop-blur-sm z-20">
+      <h3 class="text-sm font-semibold text-white tracking-wide">EventHub</h3>
     </div>
 
-    <!-- Page Content -->
+    <!-- Page -->
     <section
-      class="relative min-h-screen flex flex-col justify-center items-center pt-24 z-30 text-black px-4"
-    >
-      <div
-        class="bg-transparent w-full sm:w-3/4 md:w-1/2 lg:w-2/5 p-6 rounded-xl shadow-lg"
-      >
-        <h1
-          class="text-center bg-green-300 p-2 rounded-xl mb-6 text-xl sm:text-2xl"
-        >
-          Log In Here
-        </h1>
+      class="relative min-h-screen flex items-center justify-center z-10 px-4 py-20">
+      <div class="w-full max-w-md">
 
-        <!-- Messages -->
-        {% if messages %} {% for message in messages %}
+        <!-- Card -->
         <div
-          class="mb-3 px-3 py-2 rounded-md {% if message.tags == 'success' %}bg-green-500 text-white{% elif message.tags == 'error' %}bg-red-500 text-white{% else %}bg-gray-200{% endif %}"
-        >
-          {{ message }}
-        </div>
-        {% endfor %} {% endif %}
+          class="rounded-2xl border border-white/10 bg-white/10 backdrop-blur-sm p-8">
 
-        <!-- Form -->
-        <form method="POST" class="space-y-4 text-cyan-400">
-          {% csrf_token %} {{ form }}
+          <!-- Heading -->
+          <h1
+            class="text-2xl font-semibold text-white tracking-tight mb-1">Welcome
+            back</h1>
+          <p class="text-sm text-white/40 mb-6">Sign in to your account to
+            continue.</p>
 
-          <div class="flex flex-col sm:flex-row justify-between gap-4 mt-4">
-            <button
-              type="submit"
-              class="text-center bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded-lg"
-            >
-              Sign In
-            </button>
-            <a
-              href="{% url 'home' %}"
-              class="text-center bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg"
-              >Back</a
-            >
+          <!-- Messages -->
+          {% if messages %}
+          {% for message in messages %}
+          <div class="mb-4 px-4 py-3 rounded-xl text-sm
+                {% if message.tags == 'success' %}bg-green-500/20 border border-green-500/30 text-green-300
+                {% elif message.tags == 'error' %}bg-red-500/20 border border-red-500/30 text-red-300
+                {% else %}bg-white/10 border border-white/10 text-white/70
+                {% endif %}">
+            {{ message }}
           </div>
-        </form>
-        <a
-          href="{% url 'password_reset' %}"
-          class="text-white bg-rose-500 hover:bg-rose-600 rounded-md mt-3 inline-block p-1"
-        >
-          Forget Password ?
-        </a>
+          {% endfor %}
+          {% endif %}
+
+          <!-- Form -->
+          <form method="POST" class="space-y-4 text-white/50">
+            {% csrf_token %}
+            {{ form }}
+
+            <!-- Actions -->
+            <div class="flex flex-col gap-3 pt-2">
+              <div class="relative z-10">
+                <button type="submit"
+                  class="w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors">
+                  Sign in
+                </button>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div class="flex-1 h-px bg-white/10"></div>
+                <span class="text-xs text-white/30">or</span>
+                <div class="flex-1 h-px bg-white/10"></div>
+              </div>
+
+              <a href="{% url 'home' %}"
+                class="w-full py-2 rounded-xl text-center text-sm border border-white/15 text-white/60 hover:bg-white/5 transition-colors">
+                Back to home
+              </a>
+            </div>
+          </form>
+
+          <!-- Forgot Password -->
+          <div class="mt-5 text-center">
+            <a href="{% url 'password_reset' %}"
+              class="text-xs text-white/40 hover:text-white/70 transition-colors">
+              Forgot your password?
+            </a>
+          </div>
+
+        </div>
       </div>
     </section>
+
   </body>
 </html>

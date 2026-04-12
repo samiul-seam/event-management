@@ -1,56 +1,92 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
-</head>
-<body class="relative bg-gray-50 text-gray-800">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign Up</title>
+        <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    </head>
+    <body class="relative">
 
-    <!-- Background Image -->
-    <div class="fixed inset-0 bg-cover bg-center" style="background-image: url('{% static 'image/bg9.jpg' %}');"></div>
-    <div class="fixed inset-0 bg-black/30"></div>
+        <!-- Background -->
+        <div class="fixed inset-0 bg-cover bg-center"
+            style="background-image: url('{% static 'image/bg9.jpg' %}');"></div>
+        <div class="fixed inset-0 bg-black/60"></div>
 
-    <!-- Form Container -->
-    <div class="relative z-10 min-h-screen flex items-center justify-center">
-        <div class=" p-8 rounded-xl shadow-lg w-full max-w-md">
+        <!-- Page -->
+        <div
+            class="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
+            <div class="w-full max-w-md">
 
-            <h1 class="text-2xl font-bold text-center mb-6 bg-green-600 p-2 rounded-md">Sign Up</h1>
+                <!-- Card -->
+                <div
+                    class="rounded-2xl border border-white/20 bg-white/20 backdrop-blur-sm p-8">
 
-            {% if form.non_field_errors %}
-                <div class="bg-rose-500 text-white p-2 rounded mb-4 text-center">
-                    {% for error in form.non_field_errors %}
-                        {{ error }}
-                    {% endfor %}
-                </div>
-            {% endif %}
+                    <!-- Heading -->
+                    <h1
+                        class="text-2xl font-semibold text-white tracking-tight mb-1">Create
+                        your account</h1>
+                    <p class="text-sm text-white/40 mb-6">Join thousands
+                        discovering great events.</p>
 
-            <form method="POST">
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="mb-4">
-                        <label class="block text-cyan-400 font-medium mb-1">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                            <ul class="text-red-500 text-sm mt-1">
+                    <!-- Errors -->
+                    {% if form.non_field_errors %}
+                    <div
+                        class="rounded-xl px-4 py-3 mb-5 text-sm bg-red-500/20 border border-red-500/30 text-red-300">
+                        {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Form -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="mb-4">
+                            <label
+                                class="block text-xs font-medium uppercase tracking-wide text-white/50 mb-2">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}
+                            <ul class="mt-2 text-xs text-red-300">
                                 {% for error in field.errors %}
-                                    <li>{{ error }}</li>
+                                <li>{{ error }}</li>
                                 {% endfor %}
                             </ul>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-                
-                <div class="flex justify-between items-center mt-4">
-                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Sign Up</button>
-                    <a href="{% url 'home' %}" class="text-center bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg">Back</a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <!-- Actions -->
+                        <div class="mt-6 flex flex-col gap-3">
+                            <div class="relative z-10">
+                                <button type="submit"
+                                    class="w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors">
+                                    Sign Up
+                                </button>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <div class="flex-1 h-px bg-white/10"></div>
+                                <span class="text-sm text-white/30">or</span>
+                                <div class="flex-1 h-px bg-white"></div>
+                            </div>
+
+                            <a href="{% url 'home' %}"
+                                class="w-full py-2 rounded-xl text-center text-sm border border-white/15 text-white/60 hover:bg-white/5 
+                                hover:underline
+                                transition-colors">
+                                Back to home
+                            </a>
+                        </div>
+                    </form>
+
                 </div>
-            </form>
-
+            </div>
         </div>
-    </div>
 
-</body>
+    </body>
 </html>
